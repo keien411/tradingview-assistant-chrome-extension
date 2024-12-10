@@ -49,6 +49,9 @@
           case 'deepTestStrategy':
             await action.testStrategy(request, true)
             break
+          case 'groupTestStrategy':
+            await action.groupStrategy(request, false)
+            break
           case 'previewStrategyTestResults':
             await action.previewStrategyTestResults()
             break

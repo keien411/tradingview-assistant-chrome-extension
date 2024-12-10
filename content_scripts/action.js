@@ -86,6 +86,77 @@ action.downloadStrategyTestResults = async () => {
   file.saveAs(CSVResults, `${testResults.ticker}:${testResults.timeFrame} ${testResults.shortName} - ${testResults.cycles}_${testResults.isMaximizing ? 'max':'min'}_${testResults.optParamName}_${testResults.method}.csv`)
 }
 
+action.groupStrategy = async (request, isDeepTest = false) => {
+  try {
+    const strategyData = await action._getStrategyData()
+    const groupsParams = await action._getGroupRangeParams(strategyData)
+
+    if(groupsParams.length > 0) {
+
+      let bestValue = null
+
+      for (let index = 0; index < groupsParams.length; index++) {
+        const {allRangeParams, paramRange, cycles} = groupsParams[index];
+
+        if(allRangeParams !== null) { // click cancel on parameters
+          const strategyData = await action._getStrategyData()
+          const testParams = await action._getTestParams(request, strategyData, allRangeParams, paramRange, cycles)
+          testParams.shouldSkipInitBestResult = true
+          console.log('Test parameters', testParams)
+          action._showStartMsg(testParams.paramSpace, testParams.cycles, testParams.backtestDelay ? `with delay between tests ${testParams.backtestDelay} sec` : ``, index + 1, groupsParams.length)
+          testParams.isDeepTest = isDeepTest
+          await tv.setDeepTest(isDeepTest, testParams.deepStartDate)
+
+          let testResults = {}
+
+          if(testParams.hasOwnProperty('bestPropVal'))
+            delete testParams.bestPropVal
+          if(testParams.hasOwnProperty('bestValue'))
+            delete testParams.bestValue
+          testResults = await backtest.testStrategy(testParams, strategyData, allRangeParams) // TODO think about not save, but store them from  testResults.perfomanceSummary, testResults.filteredSummary = [], testResults.timeFrame to list
+          await action._saveTestResults(testResults, testParams, false, true)
+          if (bestValue === null) {
+            bestValue = testResults.bestValue
+          } else if (testResults.isMaximizing ? testParams.bestValue > bestValue : testParams.bestValue < bestValue) {
+            bestValue = testResults.bestValue
+          }
+          if (action.workerStatus === null) {
+            console.log('Stop command detected')
+            break
+          }
+        }
+      }
+
+      if (bestValue !== null) {
+        await ui.showPopup(`The best value ${bestValue}. Check the saved files to get the best result parameters`)
+      } else {
+        await ui.showWarningPopup(`Did not found any result value after testing`)
+      }
+
+      if (isDeepTest)
+        await tv.setDeepTest(!isDeepTest) // Reverse (switch off)
+    }
+    else {
+      await ui.showWarningPopup(`You set group is empty`)
+    }
+
+  } catch (err) {
+    console.error(err)
+    await ui.showErrorPopup(`${err}`)
+  }
+  ui.statusMessageRemove()
+}
+
+action._getGroupRangeParams = async (strategyData) => {
+  const group = 5;
+  const groupsParams = [];
+  for (let index = 0; index < group; index++){
+    const [allRangeParams, paramRange, cycles] = await action._getRangeParams(strategyData)
+    groupsParams.push({'allRangeParams':allRangeParams, 'paramRange':paramRange, 'cycles':cycles});
+  }
+  console.log('groupsParams', groupsParams)
+  return groupsParams;
+}
 
 action.testStrategy = async (request, isDeepTest = false) => {
   try {
@@ -250,13 +321,13 @@ action._getTestParams = async (request, strategyData, allRangeParams, paramRange
   return testParams
 }
 
-action._showStartMsg = (paramSpaceNumber, cycles, addInfo) => {
-  let extraHeader = `The search is performed among ${paramSpaceNumber} possible combinations of parameters (space).`
+action._showStartMsg = (paramSpaceNumber, cycles, addInfo, groupCurrent = 1, maxGroup = 1) => {
+  let extraHeader = `Group: ${groupCurrent}/${maxGroup}, The search is performed among ${paramSpaceNumber} possible combinations of parameters (space).`
   extraHeader += (paramSpaceNumber/cycles) > 10 ? `<br />This is too large for ${cycles} cycles. It is recommended to use up to 3-4 essential parameters, remove the rest from the strategy parameters file.` : ''
   ui.statusMessage(`Started${addInfo}.`, extraHeader)
 }
 
-action._saveTestResults = async (testResults, testParams, isFinalTest = true) => {
+action._saveTestResults = async (testResults, testParams, isFinalTest = true, isGroup = false) => {
   console.log('testResults', testResults)
   if(!testResults.perfomanceSummary && !testResults.perfomanceSummary.length) {
     await ui.showWarningPopup('There is no testing data for saving. Try to do test again')
@@ -271,7 +342,8 @@ action._saveTestResults = async (testResults, testParams, isFinalTest = true) =>
     if(bestResult.hasOwnProperty(`__${paramName}`))
       propVal[paramName] = bestResult[`__${paramName}`]
   })
-  if (isFinalTest)
+  if (isFinalTest || isGroup)
+    console.log(`setStrategyParams testResults.shortName:${testResults.shortName}, propVal:${propVal}`)
     await tv.setStrategyParams(testResults.shortName, propVal)
   let text = `All done.\n\n`
   text += bestResult && bestResult.hasOwnProperty(testParams.optParamName) ? 'The best '+ (testResults.isMaximizing ? '(max) ':'(min) ') + testParams.optParamName + ': ' + backtest.convertValue(bestResult[testParams.optParamName]) : ''
@@ -281,7 +353,9 @@ action._saveTestResults = async (testResults, testParams, isFinalTest = true) =>
   if(testParams.shouldSkipWaitingForDownload || !isFinalTest)
     file.saveAs(CSVResults, `${testResults.ticker}:${testResults.timeFrame}${testResults.isDeepTest ? ' deep backtesting' : ''} ${testResults.shortName} - ${testResults.cycles}_${testResults.isMaximizing ? 'max':'min'}_${testResults.optParamName}_${testResults.method}.csv`)
   if (isFinalTest) {
-    await ui.showPopup(text)
+    if(!isGroup) {
+      await ui.showPopup(text)
+    }
     if(!testParams.shouldSkipWaitingForDownload)
        file.saveAs(CSVResults, `${testResults.ticker}:${testResults.timeFrame}${testResults.isDeepTest ? ' deep backtesting' : ''} ${testResults.shortName} - ${testResults.cycles}_${testResults.isMaximizing ? 'max':'min'}_${testResults.optParamName}_${testResults.method}.csv`)
   }
