@@ -228,7 +228,263 @@ action._getRangeParams = async (strategyData) => {
 
   const initParams = {}
   initParams.paramRange = paramRange
-  initParams.paramRangeSrc = model.getStrategyRange(strategyData)
+  // initParams.paramRangeSrc = model.getStrategyRange(strategyData)
+  // TODO(keien): paramRangeSrc 自定义
+  initParams.paramRangeSrc = {
+    "Long / Short": [
+      "Both;Long;Short;",
+      "",
+      0,
+      "Both",
+      1
+    ],
+    "Slow EMA Length": [
+      40,
+      800,
+      20,
+      775,
+      2
+    ],
+    "Fast EMA Length": [
+      20,
+      400,
+      5,
+      125,
+      3
+    ],
+    "ADX Length": [
+      10,
+      56,
+      2,
+      28,
+      4
+    ],
+    "ADX Smoothing": [
+      2,
+      20,
+      2,
+      10,
+      5
+    ],
+    "ADX Threshold": [
+      10,
+      46,
+      2,
+      23,
+      6
+    ],
+    "SAR star": [
+      0.01,
+      0.16,
+      0.01,
+      0.08,
+      7
+    ],
+    "SAR inc": [
+      0.01,
+      0.08,
+      0.01,
+      0.04,
+      8
+    ],
+    "SAR max": [
+      0.1,
+      0.8,
+      0.1,
+      0.4,
+      9
+    ],
+    "MACD OPTION": [
+      "MAC-Z;MACD;",
+      "",
+      0,
+      "MAC-Z",
+      10
+    ],
+    "MACD Fast MA Length": [
+      10,
+      48,
+      2,
+      24,
+      11
+    ],
+    "MACD Slow MA Length": [
+      20,
+      108,
+      8,
+      54,
+      12
+    ],
+    "MACD Signal Length": [
+      4,
+      28,
+      2,
+      14,
+      13
+    ],
+    "Z-VWAP Length": [
+      7,
+      28,
+      2,
+      14,
+      14
+    ],
+    "StDev Length": [
+      5,
+      22,
+      2,
+      11,
+      15
+    ],
+    "MAC-Z constant A": [
+      0.05,
+      0.2,
+      1,
+      0.1,
+      16
+    ],
+    "MAC-Z constant B": [
+      0,
+      2,
+      1,
+      1,
+      17
+    ],
+    "Volume Factor": [
+      0.55,
+      2.2,
+      1,
+      1.1,
+      18
+    ],
+    "SMA Volume Length": [
+      44,
+      178,
+      13,
+      89,
+      19
+    ],
+    "BB Length": [
+      20,
+      80,
+      10,
+      40,
+      20
+    ],
+    "BB Multiplier": [
+      1,
+      5,
+      1,
+      2,
+      21
+    ],
+    "Min. BB Width % (New Position)": [
+      1,
+      10,
+      1,
+      5,
+      22
+    ],
+    "Min. BB Width % (Pyramiding)": [
+      1,
+      10,
+      1,
+      2,
+      23
+    ],
+    "Take Profit Option": [
+      "Both;Normal;Donchian;",
+      "",
+      0,
+      "Both",
+      24
+    ],
+    "Take Profit %": [
+      2,
+      8,
+      1,
+      4,
+      25
+    ],
+    "Trail offset %": [
+      0.05,
+      0.2,
+      1,
+      0.1,
+      26
+    ],
+    "Donchian Channel Period": [
+      52,
+      208,
+      16,
+      104,
+      27
+    ],
+    "Stop Loss Option": [
+      "Both;Normal;ATR;",
+      "",
+      0,
+      "Both",
+      28
+    ],
+    "Stop Loss %": [
+      3,
+      12,
+      1,
+      6,
+      29
+    ],
+    "ATR Period": [
+      7,
+      28,
+      2,
+      14,
+      30
+    ],
+    "ATR Multiplier": [
+      9,
+      36,
+      3,
+      18,
+      31
+    ],
+    "Max. Risk %": [
+      2,
+      10,
+      1,
+      5,
+      32
+    ],
+    "Max. Pyramiding": [
+      1,
+      6,
+      1,
+      3,
+      33
+    ],
+    "Step Entry Mode": [
+      "Incremental;Normal;",
+      "",
+      0,
+      "Incremental",
+      34
+    ],
+    "Min. Better Price %": [
+      0.55,
+      2.2,
+      1,
+      1.1,
+      35
+    ],
+    "Lever": [
+      1,
+      6,
+      1,
+      3,
+      36
+    ]
+  };
+  console.log('_getRangeParams initParams', initParams)
   const changedStrategyParams = await ui.showAndUpdateStrategyParameters(initParams)
   if(changedStrategyParams === null) {
     return [null, null, null]
