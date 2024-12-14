@@ -149,7 +149,460 @@ action.groupStrategy = async (request, isDeepTest = false) => {
 
 action._getGroupRangeParams = async (strategyData) => {
   const group = 5;
-  const groupsParams = [];
+  // const groupsParams = [];
+  // TODO(keien): groupsParams自定义
+  const groupsParams = [
+    {
+      "allRangeParams": {
+        "ADX Length": [
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30,
+          32,
+          34,
+          36,
+          38,
+          40,
+          42,
+          44,
+          46,
+          48,
+          50,
+          52,
+          54,
+          56
+        ],
+        "ADX Smoothing": [
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20
+        ],
+        "ADX Threshold": [
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30,
+          32,
+          34,
+          36,
+          38,
+          40,
+          42,
+          44,
+          46
+        ]
+      },
+      "paramRange": {
+        "ADX Length": [
+          10,
+          56,
+          2,
+          28,
+          4
+        ],
+        "ADX Smoothing": [
+          2,
+          20,
+          2,
+          10,
+          5
+        ],
+        "ADX Threshold": [
+          10,
+          46,
+          2,
+          23,
+          6
+        ]
+      },
+      "cycles": 1000
+    },
+    {
+      "allRangeParams": {
+        "Slow EMA Length": [
+          40,
+          60,
+          80,
+          100,
+          120,
+          140,
+          160,
+          180,
+          200,
+          220,
+          240,
+          260,
+          280,
+          300,
+          320,
+          340,
+          360,
+          380,
+          400,
+          420,
+          440,
+          460,
+          480,
+          500,
+          520,
+          540,
+          560,
+          580,
+          600,
+          620,
+          640,
+          660,
+          680,
+          700,
+          720,
+          740,
+          760,
+          780,
+          800
+        ],
+        "Fast EMA Length": [
+          20,
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          85,
+          90,
+          95,
+          100,
+          105,
+          110,
+          115,
+          120,
+          125,
+          130,
+          135,
+          140,
+          145,
+          150,
+          155,
+          160,
+          165,
+          170,
+          175,
+          180,
+          185,
+          190,
+          195,
+          200,
+          205,
+          210,
+          215,
+          220,
+          225,
+          230,
+          235,
+          240,
+          245,
+          250,
+          255,
+          260,
+          265,
+          270,
+          275,
+          280,
+          285,
+          290,
+          295,
+          300,
+          305,
+          310,
+          315,
+          320,
+          325,
+          330,
+          335,
+          340,
+          345,
+          350,
+          355,
+          360,
+          365,
+          370,
+          375,
+          380,
+          385,
+          390,
+          395,
+          400
+        ]
+      },
+      "paramRange": {
+        "Slow EMA Length": [
+          40,
+          800,
+          20,
+          775,
+          2
+        ],
+        "Fast EMA Length": [
+          20,
+          400,
+          5,
+          125,
+          3
+        ]
+      },
+      "cycles": 1000
+    },
+    {
+      "allRangeParams": {
+        "SAR star": [
+          0.01,
+          0.02,
+          0.03,
+          0.04,
+          0.05,
+          0.06,
+          0.07,
+          0.08,
+          0.09,
+          0.1,
+          0.11,
+          0.12,
+          0.13,
+          0.14,
+          0.15,
+          0.16
+        ],
+        "SAR inc": [
+          0.01,
+          0.02,
+          0.03,
+          0.04,
+          0.05,
+          0.06,
+          0.07,
+          0.08
+        ],
+        "SAR max": [
+          0.1,
+          0.2,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.8
+        ]
+      },
+      "paramRange": {
+        "SAR star": [
+          0.01,
+          0.16,
+          0.01,
+          0.08,
+          7
+        ],
+        "SAR inc": [
+          0.01,
+          0.08,
+          0.01,
+          0.04,
+          8
+        ],
+        "SAR max": [
+          0.1,
+          0.8,
+          0.1,
+          0.4,
+          9
+        ]
+      },
+      "cycles": 300
+    },
+    {
+      "allRangeParams": {
+        "MACD Fast MA Length": [
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30,
+          32,
+          34,
+          36,
+          38,
+          40,
+          42,
+          44,
+          46,
+          48
+        ],
+        "MACD Slow MA Length": [
+          20,
+          28,
+          36,
+          44,
+          52,
+          60,
+          68,
+          76,
+          84,
+          92,
+          100,
+          108
+        ],
+        "MACD Signal Length": [
+          4,
+          6,
+          8,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28
+        ]
+      },
+      "paramRange": {
+        "MACD Fast MA Length": [
+          10,
+          48,
+          2,
+          24,
+          11
+        ],
+        "MACD Slow MA Length": [
+          20,
+          108,
+          8,
+          54,
+          12
+        ],
+        "MACD Signal Length": [
+          4,
+          28,
+          2,
+          14,
+          13
+        ]
+      },
+      "cycles": 1000
+    },
+    {
+      "allRangeParams": {
+        "BB Length": [
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80
+        ],
+        "BB Multiplier": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "Min. BB Width % (New Position)": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "Min. BB Width % (Pyramiding)": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "paramRange": {
+        "BB Length": [
+          20,
+          80,
+          10,
+          40,
+          20
+        ],
+        "BB Multiplier": [
+          1,
+          5,
+          1,
+          2,
+          21
+        ],
+        "Min. BB Width % (New Position)": [
+          1,
+          10,
+          1,
+          5,
+          22
+        ],
+        "Min. BB Width % (Pyramiding)": [
+          1,
+          10,
+          1,
+          2,
+          23
+        ]
+      },
+      "cycles": 1000
+    }
+  ];
+  console.log('groupsParams', groupsParams)
+  return groupsParams;
   for (let index = 0; index < group; index++){
     const [allRangeParams, paramRange, cycles] = await action._getRangeParams(strategyData)
     groupsParams.push({'allRangeParams':allRangeParams, 'paramRange':paramRange, 'cycles':cycles});
